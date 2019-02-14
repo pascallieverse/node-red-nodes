@@ -57,6 +57,7 @@
         <label for="node-input-dname"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
         <input type="text" id="node-input-dname" data-i18n="[placeholder]node-red:common.label.name">
     </div>
+
     <div class="form-tips" id="node-tip"><span data-i18n="[html]email.tip.cred"></span></div>
 </script>
 
@@ -171,6 +172,27 @@
             <option value="Delete" data-i18n="email.label.delete"></option>
         </select>
     </div>
+    <div class="form-row">
+        <label for="node-input-criteria"><i class="fa fa-search"></i> <span data-i18n="email.label.criteria"></span></label>
+        <select type="text" id="node-input-criteria">
+            <option value="ALL" data-i18n="email.label.all"></option>
+            <option value="ANSWERED" data-i18n="email.label.answered"></option>
+            <option value="FLAGGED" data-i18n="email.label.flagged"></option>
+            <option value="SEEN" data-i18n="email.label.seen"></option>
+            <option value="UNANSWERED" data-i18n="email.label.unanswered"></option>
+            <option value="UNFLAGGED" data-i18n="email.label.unflagged"></option>
+            <option value="UNSEEN" selected="selected" data-i18n="email.label.unseen"></option>
+            <!--
+            <option value="DELETED" data-i18n="email.label.delete"></option>
+            <option value="DRAFT" data-i18n="email.label.none"></option>
+            <option value="NEW" data-i18n="email.label.delete"></option>
+            <option value="UNDELETED" data-i18n="email.label.read"></option>
+            <option value="UNDRAFT" data-i18n="email.label.delete"></option>
+            <option value="RECENT" data-i18n="email.label.read"></option>
+            <option value="OLD" data-i18n="email.label.delete"></option>
+            -->
+        </select>
+    </div>
     <br/>
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
@@ -199,9 +221,11 @@
             if (protocol === "IMAP") {
                 $(".node-input-box").show();
                 $(".node-input-disposition").show();
+                $(".node-input-criteria").show();
             } else {
                 $(".node-input-box").hide();
                 $(".node-input-disposition").hide();
+                $(".node-input-criteria").hide();
             }
             checkPorts();
         });
@@ -252,6 +276,7 @@
             port: {value:"993",required:true},
             box: {value:"INBOX"}, // For IMAP, The mailbox to process
             disposition: { value: "Read" }, // For IMAP, the disposition of the read email
+	        criteria: {value: "UNSEEN"},
             repeat: {value:"300",required:true},
             fetch: {value:"auto"},
             inputs: {value:0}
@@ -283,6 +308,10 @@
             if (typeof this.box === 'undefined') {
                 $("#node-input-box").val("INBOX");
                 this.box = "INBOX";
+            }
+            if (typeof this.criteria === 'undefined') {
+                $("#node-input-criteria").val("UNSEEN");
+                this.criteria = "UNSEEN";
             }
             if ($("#node-input-fetch").val() === null) { $("#node-input-fetch").val("auto"); }
             $("#node-input-fetch").change(function() {
